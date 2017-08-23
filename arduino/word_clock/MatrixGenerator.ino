@@ -394,7 +394,7 @@ void addPrefix(boolean matrix[], int hour, int minutes) {
 
 void addHours(boolean matrix[], int hour, int minutes) {
   int displayedHour = hour;
-  if (minutes > 35) {
+  if (minutes >= 35) {
     displayedHour++;
   } 
   if (displayedHour == 1) combine(matrix, L_UNA);
