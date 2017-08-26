@@ -1,6 +1,5 @@
 <resources>
 
   <string name="app_name">Word Clock</string>
-  <string name="service_id">net.bonysoft.wordclock</string>  <!-- TODO Move to a common module -->
 
 </resources>
