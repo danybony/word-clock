@@ -405,8 +405,8 @@ void addSeparator(boolean matrix[], int minutes) {
 void addMinutes(boolean matrix[], int minutes) {
   if (minutes < 5) {
     combine(matrix, O_CLOCK);
-  }
-  if (minutes < 10 || minutes >= 55) {
+  } 
+  else if (minutes < 10 || minutes >= 55) {
     combine(matrix, MIN_FIVE);
   }
   else if (minutes < 15 || minutes >= 50) {
