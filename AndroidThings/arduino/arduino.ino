@@ -16,6 +16,7 @@ uint32_t colorOn = pixels.Color(0, 255,255);
 uint32_t colorOff = pixels.Color(0,0,0);
 
 String readString;
+char c;
 boolean matrix[LEDS_COUNT];
 
 void setup() {
@@ -27,27 +28,21 @@ void setup() {
 void loop() {
   while (Serial.available()) {
     delay(1);
-    char c = Serial.read();  
+    c = Serial.read();  
     if (c == LED_SEPARATOR) {
       break;
     }
     if (c == START) {
-      Serial.println("clear");
       reset();
       break;
     } 
     if (c == END) {
-      Serial.println("clear");
-      logMatrix();
-      updateLEDs();
-      pixels.show();
       break;
     }  
     readString += c; 
   }
   
   if (readString.length() > 0) {
-    Serial.println(readString); 
     char carray[readString.length() + 1];
     readString.toCharArray(carray, sizeof(carray));
     int ledIndex = atoi(carray); 
@@ -57,6 +52,13 @@ void loop() {
     
     readString="";
   }
+  
+  if (c == END) {
+    // logMatrix(); //Useful for debugging
+    updateLEDs();
+    pixels.show();
+    c = ' ';
+  }  
 }
 
 void reset() {
