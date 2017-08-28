@@ -28,7 +28,6 @@ class MainActivity : Activity() {
                     this,
                     permissions,
                     PERMISSIONS_REQUEST)
-
         }
     }
 

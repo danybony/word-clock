@@ -16,7 +16,6 @@ class MatrixGenerator {
                 .addHour(date)
                 .addSeparator(date)
                 .addMinutes(date)
-
     }
 
 }
@@ -29,7 +28,7 @@ private fun BooleanArray.addPrefix(date: Date): BooleanArray {
 
 private fun BooleanArray.addHour(date: Date): BooleanArray {
     return kotlin.BooleanArray(LED_SIZE) {
-        this[it] || ONE.contains(it)
+        this[it] || ONE.contains(it)   //TODO
     }
 }
 
