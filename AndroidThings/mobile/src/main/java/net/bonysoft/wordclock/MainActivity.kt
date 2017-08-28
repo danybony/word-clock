@@ -27,7 +27,7 @@ class MainActivity : Activity() {
             ActivityCompat.requestPermissions(
                     this,
                     permissions,
-                    PERMISSIONS_REQUEST);
+                    PERMISSIONS_REQUEST)
 
         }
     }
