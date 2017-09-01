@@ -9,15 +9,21 @@ const int LEDS_COUNT = 144;
 const int LEDS_SIDE = 12;
 const char LED_SEPARATOR = ',';
 const char START = '/';
+const char RED = 'r';
+const char GREEN = 'g';
+const char BLUE = 'b';
 const char END = '!';
 
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(LEDS_COUNT, PIXELS_DATA_PIN, NEO_GRB + NEO_KHZ800);
-uint32_t colorOn = pixels.Color(0, 255,255);
+uint32_t colorOn;
 uint32_t colorOff = pixels.Color(0,0,0);
 
 String readString;
 char c;
 boolean matrix[LEDS_COUNT];
+int r = 0;
+int g = 255;
+int b = 255;
 
 void setup() {
   pixels.begin();
@@ -36,6 +42,27 @@ void loop() {
       reset();
       break;
     } 
+    if (c == RED) {
+      if (readString.length() > 0) {
+        r = stringToInt(readString);
+        readString="";
+      }
+      break;
+    }
+    if (c == GREEN) {
+      if (readString.length() > 0) {
+        g = stringToInt(readString);
+        readString="";
+      }
+      break;
+    }
+    if (c == BLUE) {
+      if (readString.length() > 0) {
+        b = stringToInt(readString);
+        readString="";
+      }
+      break;
+    } 
     if (c == END) {
       break;
     }  
@@ -43,9 +70,7 @@ void loop() {
   }
   
   if (readString.length() > 0) {
-    char carray[readString.length() + 1];
-    readString.toCharArray(carray, sizeof(carray));
-    int ledIndex = atoi(carray); 
+    int ledIndex = stringToInt(readString);
     if (ledIndex < LEDS_COUNT) {
       matrix[ledIndex] = true;
     }
@@ -55,6 +80,7 @@ void loop() {
   
   if (c == END) {
     // logMatrix(); //Useful for debugging
+    colorOn = pixels.Color(r, g, b);
     updateLEDs();
     pixels.show();
     c = ' ';
@@ -65,6 +91,12 @@ void reset() {
   for (int i=0; i<LEDS_COUNT; i++) {
     matrix[i] = false;
   }
+}
+
+int stringToInt(String string) {
+  char carray[readString.length() + 1];
+  readString.toCharArray(carray, sizeof(carray));
+  return atoi(carray);
 }
 
 void logMatrix() {
