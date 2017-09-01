@@ -59,7 +59,6 @@ class ConfigPresenter(context: Context, val appName: String, val serviceId: Stri
 
         override fun onDisconnected(endpointId: String?) {
             Timber.d("onDisconnected from " + endpointId)
-//            startAdvertising()
         }
 
         override fun onConnectionInitiated(endpointId: String?, connectionInfo: ConnectionInfo?) {

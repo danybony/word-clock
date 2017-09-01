@@ -18,10 +18,10 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val sendUpdate = {configuration:Configuration -> discoveryPresenter.sendConfiguration(configuration)}
+        val sendUpdate = { configuration: Configuration -> discoveryPresenter.sendConfiguration(configuration) }
         discoveryPresenter = DiscoveryPresenter(
                 this,
-                getString(R.string.service_id) ,
+                getString(R.string.service_id),
                 ConfigurationDisplayer(findViewById(R.id.content), sendUpdate)
         )
 
