@@ -30,12 +30,12 @@ dependencies {
     compile project(':common')
 
     compileOnly 'com.google.android.things:androidthings:0.4.1-devpreview'
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion"
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "com.google.android.gms:play-services-nearby:$playServicesVersion"
     compile 'com.jakewharton.timber:timber:4.5.1'
     compile 'com.github.felHR85:UsbSerial:4.5'
-    
-    testImplementation 'junit:junit:4.12'
+    testCompile 'junit:junit:4.12'
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
