@@ -1,15 +1,17 @@
 package net.bonysoft.wordclock
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
+import com.google.gson.Gson
+import net.bonysoft.wordclock.common.Configuration
 import timber.log.Timber
 import java.nio.charset.Charset
 
-
-class ConfigPresenter(context: Context, val appName: String, val serviceId: String) {
+class ConfigPresenter(context: Context, val appName: String, val serviceId: String, onNewConfigurationReceived: (Configuration) -> Unit) {
 
     private val googleApiClient: GoogleApiClient = GoogleApiClient.Builder(context)
             .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
@@ -25,50 +27,16 @@ class ConfigPresenter(context: Context, val appName: String, val serviceId: Stri
             .addApi(Nearby.CONNECTIONS_API)
             .build()
 
-    fun startPresenting() {
-        googleApiClient.connect()
-    }
-
     private fun startAdvertising() {
         Nearby.Connections.startAdvertising(
                 googleApiClient,
                 appName,
                 serviceId,
-                object : ConnectionLifecycleCallback() {
-                    override fun onConnectionResult(endpointId: String?, result: ConnectionResolution?) {
-                        Timber.d("connectionResult from " + endpointId, result)
-                    }
-
-                    override fun onDisconnected(endpointId: String?) {
-                        Timber.d("onDisconnected from " + endpointId)
-                    }
-
-                    override fun onConnectionInitiated(endpointId: String?, connectionInfo: ConnectionInfo?) {
-                        Timber.d("onConnectionInitiated from " + endpointId, connectionInfo)
-                        Nearby.Connections.acceptConnection(
-                                googleApiClient,
-                                endpointId,
-                                object : PayloadCallback() {
-                                    override fun onPayloadReceived(endpointId: String?, payload: Payload?) {
-                                        Timber.d("onPayloadReceived", payload)
-                                        if (payload != null) {
-                                            val bytes = payload.asBytes()
-                                            Timber.d("asString", kotlin.text.String(bytes!!, Charset.forName("UTF-8")))
-                                        }
-                                    }
-
-                                    override fun onPayloadTransferUpdate(endpointId: String?, update: PayloadTransferUpdate?) {
-                                        Timber.d("onPayloadTransferUpdate")
-                                    }
-                                }
-                        );
-                    }
-
-                },
-                AdvertisingOptions(Strategy.P2P_STAR)
+                connectionLifecycleCallback,
+                AdvertisingOptions(Strategy.P2P_CLUSTER)
         )
                 .setResultCallback { result ->
-                    Timber.d("startAdvertising:onResult:", result)
+                    Timber.d("startAdvertising:onResult:", result.status)
                     if (result.status.isSuccess) {
                         Timber.d("startAdvertising:onResult: SUCCESS")
                     } else {
@@ -81,6 +49,55 @@ class ConfigPresenter(context: Context, val appName: String, val serviceId: Stri
                         }
                     }
                 }
+    }
+
+    private val connectionLifecycleCallback = object : ConnectionLifecycleCallback() {
+        override fun onConnectionResult(endpointId: String?, result: ConnectionResolution?) {
+            Timber.d("connectionResult from " + endpointId, result)
+            sendCurrentConfiguration(Configuration(Color.RED), endpointId) // TODO
+        }
+
+        override fun onDisconnected(endpointId: String?) {
+            Timber.d("onDisconnected from " + endpointId)
+//            startAdvertising()
+        }
+
+        override fun onConnectionInitiated(endpointId: String?, connectionInfo: ConnectionInfo?) {
+            Timber.d("onConnectionInitiated from " + endpointId, connectionInfo)
+            Nearby.Connections.acceptConnection(
+                    googleApiClient,
+                    endpointId,
+                    payloadCallback
+            )
+            sendCurrentConfiguration(Configuration(Color.RED), endpointId) // TODO
+        }
+
+    }
+
+    private val payloadCallback = object : PayloadCallback() {
+        override fun onPayloadReceived(endpointId: String?, payload: Payload?) {
+            Timber.d("onPayloadReceived", payload)
+            if (payload != null) {
+                val bytes = payload.asBytes()
+                val payloadString = String(ByteArray(bytes!!.size, { i -> bytes[i] }))
+                Timber.d("asString", payloadString)
+                val configuration = Gson().fromJson(payloadString, Configuration::class.java)
+                onNewConfigurationReceived(configuration)
+            }
+        }
+
+        override fun onPayloadTransferUpdate(endpointId: String?, update: PayloadTransferUpdate?) {
+            Timber.d("onPayloadTransferUpdate")
+        }
+    }
+
+    private fun sendCurrentConfiguration(configuration: Configuration, endpointId: String?) {
+        val bytes = Gson().toJson(configuration).toByteArray(Charset.forName("UTF-8"))
+        Nearby.Connections.sendPayload(googleApiClient, endpointId, Payload.fromBytes(bytes))
+    }
+
+    fun startPresenting() {
+        googleApiClient.connect()
     }
 
     fun stopPresenting() {
