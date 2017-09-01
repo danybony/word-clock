@@ -4,6 +4,7 @@ import android.app.Activity
 import android.hardware.usb.UsbManager
 import android.os.Bundle
 import android.os.Handler
+import android.preference.PreferenceManager
 
 class WordClockActivity : Activity() {
 
@@ -12,15 +13,17 @@ class WordClockActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        configPresenter = ConfigPresenter(this,
-                getString(R.string.app_name),
-                getString(R.string.service_id)
-        )
         arduinoConnectionPresenter = ArduinoConnectionPresenter(
                 getSystemService<UsbManager>(UsbManager::class.java),
                 MatrixGenerator(),
                 MatrixSerialiser(),
-                Handler()
+                Handler(),
+                ConfigurationPersister(PreferenceManager.getDefaultSharedPreferences(this))
+        )
+        configPresenter = ConfigPresenter(this,
+                getString(R.string.app_name),
+                getString(R.string.service_id),
+                arduinoConnectionPresenter::updateConfiguration
         )
     }
 

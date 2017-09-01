@@ -5,22 +5,25 @@ import android.hardware.usb.UsbManager
 import android.os.Handler
 import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
+import net.bonysoft.wordclock.common.Configuration
+import org.joda.time.DateTimeZone
+import org.joda.time.LocalTime
 import timber.log.Timber
 import java.nio.charset.Charset
-import java.util.*
 
 class ArduinoConnectionPresenter(val usbManager: UsbManager,
                                  val matrixDisplayer: MatrixGenerator,
                                  val matrixSerialiser: MatrixSerialiser,
-                                 val handler: Handler) {
+                                 val handler: Handler,
+                                 val configurationPersister: ConfigurationPersister) {
 
+    private var configuration: Configuration = configurationPersister.lastSavedConfiguration()
     private var serialConnection: UsbSerialDevice? = null
 
     fun startPresenting() {
         val connectedDevices = usbManager.deviceList
         for (device in connectedDevices.values) {
             if (device.getVendorId() === 0x1a86 && device.getProductId() === 0x7523) {
-                Timber.d("Device found: " + device.deviceName)
                 startSerialConnection(usbManager, device)
                 break
             }
@@ -41,23 +44,32 @@ class ArduinoConnectionPresenter(val usbManager: UsbManager,
                 val dataStr = String(data, Charset.forName("UTF-8"))
                 Timber.d("Received $dataStr")
             }
+            updateDisplay()
             scheduleUpdate()
         }
     }
 
-    private val triggerRunnable: Runnable = Runnable {
-        val now = Date()
-        val matrix = matrixDisplayer.createMatrix(now)
-        val matrixStr = matrixSerialiser.serialise(matrix)
-        serialConnection?.write(matrixStr.toByteArray(Charset.forName("UTF-8")))
+    private fun scheduleUpdate() {
+        handler.postDelayed(triggerRunnable, 60000)
+    }
 
+    private val triggerRunnable: Runnable = Runnable {
+        updateDisplay()
         scheduleUpdate()
     }
 
-    private fun scheduleUpdate() {
-        handler.postDelayed(triggerRunnable, 10000)
+    fun updateConfiguration(newConfiguration: Configuration) {
+        this.configuration = newConfiguration
+        configurationPersister.saveConfiguration(configuration)
+        updateDisplay()
     }
 
+    private fun updateDisplay() {
+        val now = LocalTime(DateTimeZone.forID("Europe/Rome"))  // TODO the user should be able to change this
+        val matrix = matrixDisplayer.createMatrix(now)
+        val matrixStr = matrixSerialiser.serialise(matrix, configuration)
+        serialConnection?.write(matrixStr.toByteArray(Charset.forName("UTF-8")))
+    }
 
     fun stopPresenting() {
         handler.removeCallbacks(triggerRunnable)

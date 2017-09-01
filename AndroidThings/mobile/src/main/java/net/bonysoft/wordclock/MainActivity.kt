@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import net.bonysoft.wordclock.common.Configuration
 
 class MainActivity : Activity() {
 
@@ -17,9 +18,11 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val sendUpdate = { configuration: Configuration -> discoveryPresenter.sendConfiguration(configuration) }
         discoveryPresenter = DiscoveryPresenter(
                 this,
-                getString(R.string.service_id)
+                getString(R.string.service_id),
+                ConfigurationDisplayer(findViewById(R.id.content), sendUpdate)
         )
 
         val permissions = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH)
