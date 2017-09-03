@@ -19,6 +19,7 @@ uint32_t colorOn;
 uint32_t colorOff = pixels.Color(0,0,0);
 
 String readString;
+String wholeString;
 char c;
 boolean matrix[LEDS_COUNT];
 int r = 0;
@@ -34,57 +35,59 @@ void setup() {
 void loop() {
   while (Serial.available()) {
     delay(1);
-    c = Serial.read();  
+    wholeString = Serial.readString();
+    parseString(wholeString); 
+  } 
+}
+
+void parseString(String input) {
+  for(int i=0; i<input.length(); i++){
+    c = input[i];
     if (c == LED_SEPARATOR) {
-      break;
+      if (readString.length() > 0) {
+        int ledIndex = stringToInt(readString);
+        if (ledIndex < LEDS_COUNT) {
+          matrix[ledIndex] = true;
+        }
+      }
+      readString="";
+      continue;
     }
-    if (c == START) {
+    else if (c == START) {
       reset();
-      break;
+      continue;
     } 
-    if (c == RED) {
+    else if (c == RED) {
       if (readString.length() > 0) {
         r = stringToInt(readString);
         readString="";
       }
-      break;
+      continue;
     }
-    if (c == GREEN) {
+    else if (c == GREEN) {
       if (readString.length() > 0) {
         g = stringToInt(readString);
         readString="";
       }
-      break;
+      continue;
     }
-    if (c == BLUE) {
+    else if (c == BLUE) {
       if (readString.length() > 0) {
         b = stringToInt(readString);
         readString="";
       }
+      continue;
+    } 
+    else if (c == END) {
+      // logMatrix(); //Useful for debugging
+      colorOn = pixels.Color(r, g, b);
+      updateLEDs();
+      pixels.show();
+      c = ' ';
       break;
     } 
-    if (c == END) {
-      break;
-    }  
-    readString += c; 
+    readString += c;
   }
-  
-  if (readString.length() > 0) {
-    int ledIndex = stringToInt(readString);
-    if (ledIndex < LEDS_COUNT) {
-      matrix[ledIndex] = true;
-    }
-    
-    readString="";
-  }
-  
-  if (c == END) {
-    // logMatrix(); //Useful for debugging
-    colorOn = pixels.Color(r, g, b);
-    updateLEDs();
-    pixels.show();
-    c = ' ';
-  }  
 }
 
 void reset() {
