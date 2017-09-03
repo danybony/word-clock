@@ -11,7 +11,11 @@ import net.bonysoft.wordclock.common.Configuration
 import timber.log.Timber
 import java.nio.charset.Charset
 
-class ConfigPresenter(context: Context, val appName: String, val serviceId: String, onNewConfigurationReceived: (Configuration) -> Unit) {
+class ConfigPresenter(context: Context,
+                      val appName: String,
+                      val serviceId: String,
+                      val configurationPersister: ConfigurationPersister,
+                      onNewConfigurationReceived: (Configuration) -> Unit) {
 
     private val googleApiClient: GoogleApiClient = GoogleApiClient.Builder(context)
             .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
@@ -54,7 +58,7 @@ class ConfigPresenter(context: Context, val appName: String, val serviceId: Stri
     private val connectionLifecycleCallback = object : ConnectionLifecycleCallback() {
         override fun onConnectionResult(endpointId: String?, result: ConnectionResolution?) {
             Timber.d("connectionResult from " + endpointId, result)
-            sendCurrentConfiguration(Configuration(Color.RED), endpointId) // TODO
+            sendCurrentConfiguration(configurationPersister.lastSavedConfiguration(), endpointId)
         }
 
         override fun onDisconnected(endpointId: String?) {

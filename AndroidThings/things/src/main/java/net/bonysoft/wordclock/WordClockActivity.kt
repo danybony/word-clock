@@ -3,7 +3,6 @@ package net.bonysoft.wordclock
 import android.app.Activity
 import android.hardware.usb.UsbManager
 import android.os.Bundle
-import android.os.Handler
 import android.preference.PreferenceManager
 
 class WordClockActivity : Activity() {
@@ -13,16 +12,18 @@ class WordClockActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val configurationPersister = ConfigurationPersister(PreferenceManager.getDefaultSharedPreferences(this))
         arduinoConnectionPresenter = ArduinoConnectionPresenter(
+                this,
                 getSystemService<UsbManager>(UsbManager::class.java),
                 MatrixGenerator(),
                 MatrixSerialiser(),
-                Handler(),
-                ConfigurationPersister(PreferenceManager.getDefaultSharedPreferences(this))
+                configurationPersister
         )
         configPresenter = ConfigPresenter(this,
                 getString(R.string.app_name),
                 getString(R.string.service_id),
+                configurationPersister,
                 arduinoConnectionPresenter::updateConfiguration
         )
     }
