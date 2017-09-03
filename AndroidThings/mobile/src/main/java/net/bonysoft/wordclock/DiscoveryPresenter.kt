@@ -35,7 +35,7 @@ class DiscoveryPresenter(context: Context, val serviceId: String, val configurat
                 googleApiClient,
                 serviceId,
                 endpointDiscoveryCallback,
-                DiscoveryOptions(Strategy.P2P_CLUSTER)
+                DiscoveryOptions(Strategy.P2P_STAR)
         )
                 .setResultCallback { result ->
                     Timber.d("startDiscovery:onResult:" + result)

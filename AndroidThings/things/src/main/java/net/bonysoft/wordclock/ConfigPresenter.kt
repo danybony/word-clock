@@ -33,7 +33,7 @@ class ConfigPresenter(context: Context, val appName: String, val serviceId: Stri
                 appName,
                 serviceId,
                 connectionLifecycleCallback,
-                AdvertisingOptions(Strategy.P2P_CLUSTER)
+                AdvertisingOptions(Strategy.P2P_STAR)
         )
                 .setResultCallback { result ->
                     Timber.d("startAdvertising:onResult:", result.status)
