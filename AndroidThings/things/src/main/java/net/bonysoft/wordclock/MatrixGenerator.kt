@@ -25,6 +25,7 @@ private val MIN_HALF = intArrayOf(14, 15, 16, 17)
 private val TO = intArrayOf(49, 50)
 private val PAST = intArrayOf(51, 52, 53, 54)
 private val O_CLOCK = intArrayOf(137, 138, 139, 140, 141, 142)
+private val ERROR = intArrayOf(14, 15, 20, 21, 25, 26, 27, 28, 31, 32, 33, 34, 38, 39, 44, 45, 88, 89, 90, 91, 99, 100, 101, 102, 103, 104, 110, 111, 116, 117, 121, 122, 129, 130)
 
 class MatrixGenerator {
 
@@ -34,6 +35,10 @@ class MatrixGenerator {
                 .addHour(time)
                 .addSeparator(time)
                 .addMinutes(time)
+    }
+
+    fun createErrorMatrix(): BooleanArray {
+        return BooleanArray(LED_SIZE, { ERROR.contains(it) })
     }
 
 }

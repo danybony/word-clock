@@ -11,7 +11,7 @@ import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
 import net.bonysoft.wordclock.common.Configuration
 import org.joda.time.DateTimeZone
-import org.joda.time.LocalTime
+import org.joda.time.LocalDateTime
 import timber.log.Timber
 import java.nio.charset.Charset
 import java.util.*
@@ -81,8 +81,8 @@ class ArduinoConnectionPresenter(val activity: Activity,
     }
 
     private fun updateDisplay() {
-        val now = LocalTime(DateTimeZone.forID("Europe/Rome"))  // TODO the user should be able to change this
-        val matrix = matrixDisplayer.createMatrix(now)
+        val now = LocalDateTime(DateTimeZone.forID("Europe/Rome"))  // TODO the user should be able to change this
+        val matrix = if (now.year < 2016) matrixDisplayer.createErrorMatrix() else matrixDisplayer.createMatrix(now.toLocalTime())
         val matrixStr = matrixSerialiser.serialise(matrix, configurationPersister.lastSavedConfiguration())
         serialConnection?.write(matrixStr.toByteArray(Charset.forName("UTF-8")))
     }
