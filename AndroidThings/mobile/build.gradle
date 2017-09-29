@@ -28,11 +28,11 @@ dependencies {
     compile project(':common')
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "com.google.android.gms:play-services-nearby:$playServicesVersion"
-    compile 'com.google.code.gson:gson:2.8.1'
-    compile 'com.jakewharton.timber:timber:4.5.1'
-    compile 'com.thebluealliance:spectrum:0.7.1'
+    compile "com.google.code.gson:gson:$gsonVersion"
+    compile "com.jakewharton.timber:timber:$timberVersion"
+    compile "com.thebluealliance:spectrum:$spectrumVersion"
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation "junit:junit:$junitVersion"
     androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

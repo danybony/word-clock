@@ -29,15 +29,15 @@ android {
 dependencies {
     compile project(':common')
 
-    compileOnly 'com.google.android.things:androidthings:0.4.1-devpreview'
+    compileOnly "com.google.android.things:androidthings:$androidthingsVersion"
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "com.google.android.gms:play-services-nearby:$playServicesVersion"
-    compile 'com.jakewharton.timber:timber:4.5.1'
-    compile 'com.github.felHR85:UsbSerial:4.5'
-    compile 'joda-time:joda-time:2.9.9'
-    compile 'com.google.code.gson:gson:2.8.1'
+    compile "com.jakewharton.timber:timber:$timberVersion"
+    compile "com.github.felHR85:UsbSerial:$usbSerialVersion"
+    compile "joda-time:joda-time:$jodaTimeVersion"
+    compile "com.google.code.gson:gson:$gsonVersion"
 
-    testCompile 'junit:junit:4.12'
+    testCompile "junit:junit:$junitVersion"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
