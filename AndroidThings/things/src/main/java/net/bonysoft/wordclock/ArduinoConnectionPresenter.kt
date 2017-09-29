@@ -42,7 +42,7 @@ class ArduinoConnectionPresenter(val activity: Activity,
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action.compareTo(Intent.ACTION_TIME_TICK) == 0) {
                 // TODO this is for demo only
-                randomizeConfiguration()
+                //randomizeConfiguration()
 
                 updateDisplay()
             }
