@@ -24,9 +24,22 @@ class MainActivity : Activity() {
                 getString(R.string.service_id),
                 ConfigurationDisplayer(findViewById(R.id.content), sendUpdate)
         )
+    }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == PERMISSIONS_REQUEST) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                discoveryPresenter.startPresenting()
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
         val permissions = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.BLUETOOTH)
-        if (!allPermissionsGranted(permissions)) {
+        if (allPermissionsGranted(permissions)) {
+            discoveryPresenter.startPresenting()
+        } else {
             ActivityCompat.requestPermissions(
                     this,
                     permissions,
@@ -41,32 +54,6 @@ class MainActivity : Activity() {
             }
         }
         return true
-    }
-
-    //TODO: do things when permissions are granted
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            PERMISSIONS_REQUEST -> {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return
-            }
-        }// other 'case' lines to check for other
-        // permissions this app might request
-    }
-
-    override fun onStart() {
-        super.onStart()
-        discoveryPresenter.startPresenting()
     }
 
     override fun onStop() {
