@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <dimen name="main_activity_padding">8dp</dimen>
-  <dimen name="palette_margin_top">8dp</dimen>
+  <dimen name="palette_margin_top">32dp</dimen>
   <dimen name="palette_outline">1dp</dimen>
 </resources>

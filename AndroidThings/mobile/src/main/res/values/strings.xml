@@ -2,5 +2,6 @@
 
   <string name="app_name">Word Clock</string>
   <string name="empty_devices">No clock found…</string>
+  <string name="select_color">Select the new light color</string>
 
 </resources>
