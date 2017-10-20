@@ -36,6 +36,7 @@ dependencies {
     compile "com.github.felHR85:UsbSerial:$usbSerialVersion"
     compile "joda-time:joda-time:$jodaTimeVersion"
     compile "com.google.code.gson:gson:$gsonVersion"
+    implementation "com.google.firebase:firebase-database:$playServicesVersion"
 
     testCompile "junit:junit:$junitVersion"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
@@ -43,3 +44,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
+
+apply plugin: 'com.google.gms.google-services'
