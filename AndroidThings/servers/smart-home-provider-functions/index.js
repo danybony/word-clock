@@ -38,23 +38,13 @@ function sync(reqdata, res) {
         payload: {
             devices: [{
                 id: "1",
-                type: "action.devices.types.SWITCH",
-                traits: [
-                    "action.devices.traits.OnOff"
-                ],
-                name: {
-                    name: "fan"
-                },
-                willReportState: true
-            }, {
-                id: "2",
                 type: "action.devices.types.LIGHT",
                 traits: [
                     "action.devices.traits.OnOff",
                     "action.devices.traits.ColorSpectrum"
                 ],
                 name: {
-                    name: "lights"
+                    name: "clock"
                 },
                 willReportState: true
             }]
@@ -70,14 +60,10 @@ function query(reqdata, res) {
             payload: {
                 devices: {
                     "1": {
-                        on: devices.fan.on,
-                        online: true
-                    },
-                    "2": {
-                        on: devices.lights.on,
+                        on: devices.clock.on,
                         online: true,
                         color: {
-                            spectrumRGB: devices.lights.spectrumRGB
+                            spectrumRGB: devices.clock.spectrumRGB
                         }
                     }
                 }
@@ -101,17 +87,15 @@ function execute(reqdata, res) {
                     for (let k = 0; k < curCommand.devices.length; k++) {
                         let curDevice = curCommand.devices[k];
                         if (curDevice.id === "1") {
-                            devices.fan.on = curExec.params.on;
-                        } else if (curDevice.id === "2") {
-                            devices.lights.on = curExec.params.on;
+                            devices.clock.on = curExec.params.on;
                         }
                         respCommands.push({ids: [ curDevice.id ], status: "SUCCESS"});
                     }
                 } else if (curExec.command === "action.devices.commands.ColorAbsolute") {
                     for (let k = 0; k < curCommand.devices.length; k++) {
                         let curDevice = curCommand.devices[k];
-                        if (curDevice.id === "2") {
-                            devices.lights.spectrumRGB = curExec.params.color.spectrumRGB;
+                        if (curDevice.id === "1") {
+                            devices.clock.spectrumRGB = curExec.params.color.spectrumRGB;
                         }
                         respCommands.push({ids: [ curDevice.id ], status: "SUCCESS"});
                     }

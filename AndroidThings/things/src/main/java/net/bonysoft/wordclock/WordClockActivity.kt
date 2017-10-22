@@ -14,8 +14,8 @@ import timber.log.Timber
 class WordClockActivity : Activity() {
 
     companion object {
-        private val FIREBASE_LIGHTS = "lights"
-        private val FIREBASE_LIGHTS_RGB = "spectrumRGB"
+        private val FIREBASE_CLOCK = "clock"
+        private val FIREBASE_CLOCK_RGB = "spectrumRGB"
     }
 
     private lateinit var configPresenter: ConfigPresenter
@@ -31,7 +31,7 @@ class WordClockActivity : Activity() {
                 MatrixSerialiser(),
                 configurationPersister
         )
-        val database = FirebaseDatabase.getInstance().reference.child(FIREBASE_LIGHTS)
+        val database = FirebaseDatabase.getInstance().reference.child(FIREBASE_CLOCK)
         database.addValueEventListener(lightChangedEventListener)
         configPresenter = ConfigPresenter(this,
                 getString(R.string.app_name),
@@ -43,7 +43,7 @@ class WordClockActivity : Activity() {
 
     private val lightChangedEventListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
-            val spectrumRGB = snapshot.child(FIREBASE_LIGHTS_RGB).getValue(Int::class.java) ?: 0
+            val spectrumRGB = snapshot.child(FIREBASE_CLOCK_RGB).getValue(Int::class.java) ?: 0
             Timber.d("onDataChange (spectrum=$spectrumRGB)")
             arduinoConnectionPresenter.updateConfiguration(Configuration(spectrumRGB))
         }
