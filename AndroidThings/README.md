@@ -29,9 +29,10 @@ The following steps are required to add the clock to Home Graph, a database that
 * Create a new Firebase Realtime Database, importing the following json file
 ```json
 {
-  "clock" : {
-    "on" : true,
-    "spectrumRGB" : 16510692
+  "clock": {
+    "on": true,
+    "brightness": 100, 
+    "spectrumRGB": 16510692
   }
 }
 ```

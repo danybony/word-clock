@@ -41,10 +41,12 @@ function sync(reqdata, res) {
                 type: "action.devices.types.LIGHT",
                 traits: [
                     "action.devices.traits.OnOff",
-                    "action.devices.traits.ColorSpectrum"
+                    "action.devices.traits.ColorSpectrum",
+                    "action.devices.traits.Brightness"
                 ],
                 name: {
-                    name: "clock"
+                    name: "clock",
+                    nicknames: ["word clock"]
                 },
                 willReportState: true
             }]
@@ -62,6 +64,7 @@ function query(reqdata, res) {
                     "1": {
                         on: devices.clock.on,
                         online: true,
+                        brightness: devices.clock.brightness,
                         color: {
                             spectrumRGB: devices.clock.spectrumRGB
                         }
@@ -91,15 +94,23 @@ function execute(reqdata, res) {
                         }
                         respCommands.push({ids: [ curDevice.id ], status: "SUCCESS"});
                     }
-                } else if (curExec.command === "action.devices.commands.ColorAbsolute") {
+                } else if (curExec.command === "action.devices.commands.BrightnessAbsolute") {
                     for (let k = 0; k < curCommand.devices.length; k++) {
                         let curDevice = curCommand.devices[k];
                         if (curDevice.id === "1") {
-                            devices.clock.spectrumRGB = curExec.params.color.spectrumRGB;
+                            devices.clock.brightness = curExec.params.brightness;
                         }
                         respCommands.push({ids: [ curDevice.id ], status: "SUCCESS"});
                     }
-                }
+                } else if (curExec.command === "action.devices.commands.ColorAbsolute") {
+                     for (let k = 0; k < curCommand.devices.length; k++) {
+                         let curDevice = curCommand.devices[k];
+                         if (curDevice.id === "1") {
+                             devices.clock.spectrumRGB = curExec.params.color.spectrumRGB;
+                         }
+                         respCommands.push({ids: [ curDevice.id ], status: "SUCCESS"});
+                     }
+                 }
             }
         }
 

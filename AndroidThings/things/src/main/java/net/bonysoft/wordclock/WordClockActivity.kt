@@ -15,6 +15,7 @@ class WordClockActivity : Activity() {
 
     companion object {
         private val FIREBASE_CLOCK = "clock"
+        private val FIREBASE_CLOCK_BRIGHTNESS = "brightness"
         private val FIREBASE_CLOCK_RGB = "spectrumRGB"
     }
 
@@ -44,8 +45,9 @@ class WordClockActivity : Activity() {
     private val lightChangedEventListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             val spectrumRGB = snapshot.child(FIREBASE_CLOCK_RGB).getValue(Int::class.java) ?: 0
-            Timber.d("onDataChange (spectrum=$spectrumRGB)")
-            arduinoConnectionPresenter.updateConfiguration(Configuration(spectrumRGB))
+            val brightness = snapshot.child(FIREBASE_CLOCK_BRIGHTNESS).getValue(Int::class.java) ?: 100
+            Timber.d("onDataChange (spectrum=$spectrumRGB), brightness=$brightness)")
+            arduinoConnectionPresenter.updateConfiguration(Configuration(spectrumRGB, brightness))
         }
 
         override fun onCancelled(error: DatabaseError) {
