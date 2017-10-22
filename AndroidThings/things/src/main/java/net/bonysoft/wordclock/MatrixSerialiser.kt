@@ -7,6 +7,7 @@ const val START = "/"
 const val RED = "r"
 const val GREEN = "g"
 const val BLUE = "b"
+const val BRIGHTNESS = "a"
 const val END = '!'
 
 class MatrixSerialiser {
@@ -15,10 +16,12 @@ class MatrixSerialiser {
         val r = configuration.color shr 16 and 0xFF
         val g = configuration.color shr 8 and 0xFF
         val b = configuration.color shr 0 and 0xFF
+        val brightness = (configuration.brightness * 255f / 100f).toInt()
         val stringBuilder = StringBuilder(START)
                 .append(r).append(RED)
                 .append(g).append(GREEN)
                 .append(b).append(BLUE)
+                .append(brightness).append(BRIGHTNESS)
         matrix.forEachIndexed { index, isOn ->
             if (isOn) {
                 stringBuilder.append(index.toString()).append(LED_SEPARATOR)

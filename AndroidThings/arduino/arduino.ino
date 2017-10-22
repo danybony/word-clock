@@ -12,6 +12,7 @@ const char START = '/';
 const char RED = 'r';
 const char GREEN = 'g';
 const char BLUE = 'b';
+const char BRIGHTNESS = 'a';
 const char END = '!';
 
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(LEDS_COUNT, PIXELS_DATA_PIN, NEO_GRB + NEO_KHZ800);
@@ -25,10 +26,11 @@ boolean matrix[LEDS_COUNT];
 int r = 0;
 int g = 255;
 int b = 255;
+int brightness = 255;
 
 void setup() {
   pixels.begin();
-  pixels.setBrightness(255);
+  pixels.setBrightness(brightness);
   Serial.begin(115200);
 }
 
@@ -77,10 +79,18 @@ void parseString(String input) {
         readString="";
       }
       continue;
-    } 
+    }
+    else if (c == BRIGHTNESS) {
+      if (readString.length() > 0) {
+        brightness = stringToInt(readString);
+        readString="";
+      }
+      continue;
+    }
     else if (c == END) {
       // logMatrix(); //Useful for debugging
       colorOn = pixels.Color(r, g, b);
+      pixels.setBrightness(brightness);
       updateLEDs();
       pixels.show();
       c = ' ';
