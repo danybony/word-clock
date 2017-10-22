@@ -29,10 +29,7 @@ The following steps are required to add the clock to Home Graph, a database that
 * Create a new Firebase Realtime Database, importing the following json file
 ```json
 {
-  "fan" : {
-    "on" : false
-  },
-  "lights" : {
+  "clock" : {
     "on" : true,
     "spectrumRGB" : 16510692
   }
@@ -89,11 +86,11 @@ ngrok http 3000
 * The fake OAuth2 server is now exposed to the URL printed on the console. It has a format similar to `https://<NGROK_ID>.ngrok.io`. Copy it as you'll need it later
 
 ### Actions on Google
-* Update the `servers/actions-on-google/action.json` file and specify the Google Cloud Functions endpoint to the `url` variable
+* Update the `servers/action.json` file and specify the Google Cloud Functions endpoint to the `url` variable
 * Create an Actions on Google project on the [Actions Console](https://console.actions.google.com/) using the Actions SDK
 * When told to update the app via the `gactions` command, run the following to use our `action.json` file
 ```bash
-cd servers/actions-on-google
+cd servers
 gactions update --action_package action.json --project <PROJECT_ID>
 ```
 * Set up account linking  
