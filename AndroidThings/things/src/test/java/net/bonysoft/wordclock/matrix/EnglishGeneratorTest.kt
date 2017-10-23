@@ -1,4 +1,4 @@
-package net.bonysoft.wordclock
+package net.bonysoft.wordclock.matrix
 
 import org.joda.time.LocalTime
 import org.junit.Test
@@ -7,7 +7,7 @@ import org.junit.runners.Parameterized
 import kotlin.test.assertTrue
 
 @RunWith(Parameterized::class)
-class MatrixGeneratorTest(val inputTime: LocalTime, val displayedText: String) {
+class EnglishGeneratorTest(private val inputTime: LocalTime, private val displayedText: String) {
 
     private val LAYOUT = charArrayOf(
             'A', 'I', 'T', 'S', 'N', 'O', 'F', 'G', 'H', 'L', 'O', 'L',
@@ -24,7 +24,7 @@ class MatrixGeneratorTest(val inputTime: LocalTime, val displayedText: String) {
             'V', 'U', 'N', 'F', 'X', 'O', 'C', 'L', 'O', 'C', 'K', 'U'
     )
 
-    private val matrixGenerator = MatrixGenerator()
+    private val matrixGenerator = EnglishGenerator()
 
     companion object {
         @JvmStatic

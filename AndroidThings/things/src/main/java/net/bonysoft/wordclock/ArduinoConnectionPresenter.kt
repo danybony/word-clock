@@ -10,6 +10,7 @@ import android.hardware.usb.UsbManager
 import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
 import net.bonysoft.wordclock.common.Configuration
+import net.bonysoft.wordclock.matrix.MatrixGenerator
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
 import timber.log.Timber
@@ -19,7 +20,7 @@ import java.util.*
 
 class ArduinoConnectionPresenter(val activity: Activity,
                                  val usbManager: UsbManager,
-                                 val matrixDisplayer: MatrixGenerator,
+                                 val matrixGenerator: MatrixGenerator,
                                  val matrixSerialiser: MatrixSerialiser,
                                  val configurationPersister: ConfigurationPersister) {
 
@@ -82,7 +83,7 @@ class ArduinoConnectionPresenter(val activity: Activity,
 
     private fun updateDisplay() {
         val now = LocalDateTime(DateTimeZone.forID("Europe/Rome"))  // TODO the user should be able to change this
-        val matrix = if (now.year < 2016) matrixDisplayer.createErrorMatrix() else matrixDisplayer.createMatrix(now.toLocalTime())
+        val matrix = if (now.year < 2016) matrixGenerator.createErrorMatrix() else matrixGenerator.createMatrix(now.toLocalTime())
         val matrixStr = matrixSerialiser.serialise(matrix, configurationPersister.lastSavedConfiguration())
         serialConnection?.write(matrixStr.toByteArray(Charset.forName("UTF-8")))
     }
