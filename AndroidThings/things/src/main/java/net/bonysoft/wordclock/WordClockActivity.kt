@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import net.bonysoft.wordclock.common.Configuration
+import net.bonysoft.wordclock.matrix.MatrixGeneratorFactory
 import timber.log.Timber
 
 class WordClockActivity : Activity() {
@@ -25,10 +26,11 @@ class WordClockActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val configurationPersister = ConfigurationPersister(PreferenceManager.getDefaultSharedPreferences(this))
+        val matrixGenerator = MatrixGeneratorFactory().createGenerator()
         arduinoConnectionPresenter = ArduinoConnectionPresenter(
                 this,
                 getSystemService<UsbManager>(UsbManager::class.java),
-                MatrixGenerator(),
+                matrixGenerator,
                 MatrixSerialiser(),
                 configurationPersister
         )
