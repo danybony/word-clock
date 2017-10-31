@@ -27,7 +27,7 @@ android {
     }
 
     productFlavors {
-        flavorDimensions 'language'
+        flavorDimensions 'ledFormat', 'language'
 
         italian {
             dimension 'language'
@@ -35,6 +35,14 @@ android {
 
         english {
             dimension 'language'
+        }
+
+        ws2801 {
+            dimension 'ledFormat'
+        }
+
+        ws2812b {
+            dimension 'ledFormat'
         }
     }
 }
