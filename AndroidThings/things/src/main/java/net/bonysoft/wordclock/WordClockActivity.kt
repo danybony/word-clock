@@ -1,7 +1,10 @@
 package net.bonysoft.wordclock
 
 import android.app.Activity
-import android.hardware.usb.UsbManager
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.preference.PreferenceManager
 import com.google.firebase.database.DataSnapshot
@@ -9,7 +12,12 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import net.bonysoft.wordclock.common.Configuration
+import net.bonysoft.wordclock.leds.LedsDisplayer
+import net.bonysoft.wordclock.leds.LedsDisplayerFactory
+import net.bonysoft.wordclock.matrix.MatrixGenerator
 import net.bonysoft.wordclock.matrix.MatrixGeneratorFactory
+import org.joda.time.DateTimeZone
+import org.joda.time.LocalDateTime
 import timber.log.Timber
 
 class WordClockActivity : Activity() {
@@ -20,36 +28,33 @@ class WordClockActivity : Activity() {
         private val FIREBASE_CLOCK_RGB = "spectrumRGB"
     }
 
-    private lateinit var configPresenter: ConfigPresenter
-    private lateinit var arduinoConnectionPresenter: ArduinoConnectionPresenter
+    private lateinit var nearbyConfigPresenter: ConfigPresenter
+    private lateinit var ledDisplayer: LedsDisplayer
+    private lateinit var matrixGenerator: MatrixGenerator
+    private lateinit var configurationPersister: ConfigurationPersister
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val configurationPersister = ConfigurationPersister(PreferenceManager.getDefaultSharedPreferences(this))
-        val matrixGenerator = MatrixGeneratorFactory().createGenerator()
-        arduinoConnectionPresenter = ArduinoConnectionPresenter(
-                this,
-                getSystemService<UsbManager>(UsbManager::class.java),
-                matrixGenerator,
-                MatrixSerialiser(),
-                configurationPersister
-        )
+        configurationPersister = ConfigurationPersister(PreferenceManager.getDefaultSharedPreferences(this))
+
+        matrixGenerator = MatrixGeneratorFactory().createGenerator()
+        ledDisplayer = LedsDisplayerFactory().createDisplayer(this)
         val database = FirebaseDatabase.getInstance().reference.child(FIREBASE_CLOCK)
-        database.addValueEventListener(lightChangedEventListener)
-        configPresenter = ConfigPresenter(this,
+        database.addValueEventListener(firebaseChangedEventListener)
+        nearbyConfigPresenter = ConfigPresenter(this,
                 getString(R.string.app_name),
                 getString(R.string.service_id),
                 configurationPersister,
-                arduinoConnectionPresenter::updateConfiguration
+                this::updateConfiguration
         )
     }
 
-    private val lightChangedEventListener = object : ValueEventListener {
+    private val firebaseChangedEventListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             val spectrumRGB = snapshot.child(FIREBASE_CLOCK_RGB).getValue(Int::class.java) ?: 0
             val brightness = snapshot.child(FIREBASE_CLOCK_BRIGHTNESS).getValue(Int::class.java) ?: 100
             Timber.d("onDataChange (spectrum=$spectrumRGB), brightness=$brightness)")
-            arduinoConnectionPresenter.updateConfiguration(Configuration(spectrumRGB, brightness))
+            updateConfiguration(Configuration(spectrumRGB, brightness))
         }
 
         override fun onCancelled(error: DatabaseError) {
@@ -57,15 +62,38 @@ class WordClockActivity : Activity() {
         }
     }
 
+    private fun updateConfiguration(configuration: Configuration) {
+        configurationPersister.saveConfiguration(configuration)
+        displayCurrentTime()
+    }
+
     override fun onStart() {
         super.onStart()
-        configPresenter.startPresenting()
-        arduinoConnectionPresenter.startPresenting()
+        nearbyConfigPresenter.startPresenting()
+        ledDisplayer.start()
+        registerReceiver(tickReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
+        displayCurrentTime()
+    }
+
+    private val tickReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action.compareTo(Intent.ACTION_TIME_TICK) == 0) {
+                displayCurrentTime()
+            }
+        }
+    }
+
+    private fun displayCurrentTime() {
+        val now = LocalDateTime(DateTimeZone.forID("Europe/Rome"))  // TODO the user should be able to change this
+        val matrix = if (now.year < 2016) matrixGenerator.createErrorMatrix() else matrixGenerator.createMatrix(now.toLocalTime())
+        val configuration = configurationPersister.lastSavedConfiguration()
+        ledDisplayer.display(matrix, configuration)
     }
 
     override fun onStop() {
-        configPresenter.stopPresenting()
-        arduinoConnectionPresenter.stopPresenting()
+        unregisterReceiver(tickReceiver)
+        nearbyConfigPresenter.stopPresenting()
+        ledDisplayer.stop()
         super.onStop()
     }
 }
