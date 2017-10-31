@@ -13,7 +13,7 @@ class Ws2801Displayer : LedsDisplayer {
     }
 
     override fun display(matrix: BooleanArray, configuration: Configuration) {
-        val colors = IntArray(3) {
+        val colors = IntArray(matrix.size) {
             return@IntArray if (matrix[it]) configuration.color else Color.BLACK
         }
         ledstrip.write(colors)

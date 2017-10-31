@@ -6,7 +6,6 @@ import net.bonysoft.wordclock.BuildConfig
 import net.bonysoft.wordclock.MatrixSerialiser
 import net.bonysoft.wordclock.common.Configuration
 
-
 interface LedsDisplayer {
 
     fun start()

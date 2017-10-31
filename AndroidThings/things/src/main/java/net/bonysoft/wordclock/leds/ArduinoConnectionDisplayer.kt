@@ -9,7 +9,6 @@ import net.bonysoft.wordclock.common.Configuration
 import timber.log.Timber
 import java.nio.charset.Charset
 
-
 class ArduinoConnectionDisplayer(private val usbManager: UsbManager,
                                  private val matrixSerialiser: MatrixSerialiser) : LedsDisplayer {
 
