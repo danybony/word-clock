@@ -35,7 +35,7 @@ class EnglishGenerator : MatrixGenerator {
 
     override fun createMatrix(time: LocalTime): BooleanArray {
         return BooleanArray(LED_SIZE, { false })
-                .addPrefix(time)
+                .addPrefix()
                 .addHour(time)
                 .addSeparator(time)
                 .addMinutes(time)
@@ -45,7 +45,7 @@ class EnglishGenerator : MatrixGenerator {
         return BooleanArray(LED_SIZE, { ERROR.contains(it) })
     }
 
-    private fun BooleanArray.addPrefix(time: LocalTime): BooleanArray {
+    private fun BooleanArray.addPrefix(): BooleanArray {
         return kotlin.BooleanArray(LED_SIZE) {
             ITS.contains(it)
         }

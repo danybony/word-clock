@@ -6,6 +6,7 @@ ext {
     usbSerialVersion = '4.5'
     jodaTimeVersion = '2.9.9'
     gsonVersion = '2.8.1'
+    ws2801Version = '0.0.3'
     spectrumVersion = '0.7.1'
 
     junitVersion = '4.12'
