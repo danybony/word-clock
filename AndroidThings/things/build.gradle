@@ -57,6 +57,7 @@ dependencies {
     compile "com.github.felHR85:UsbSerial:$usbSerialVersion"
     compile "joda-time:joda-time:$jodaTimeVersion"
     compile "com.google.code.gson:gson:$gsonVersion"
+    compile "com.xrigau:ws2801-driver:$ws2801Version"
     implementation "com.google.firebase:firebase-database:$playServicesVersion"
 
     testCompile "junit:junit:$junitVersion"
