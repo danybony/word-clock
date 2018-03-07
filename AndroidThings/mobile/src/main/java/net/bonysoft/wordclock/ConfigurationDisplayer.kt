@@ -6,9 +6,9 @@ import net.bonysoft.wordclock.common.Configuration
 
 class ConfigurationDisplayer(rootView: View, onNewConfiguration: (Configuration) -> Unit) {
 
-    private val configurationView = rootView.findViewById(R.id.configuration_view)
+    private val configurationView = rootView.findViewById(R.id.configuration_view) as View
     private val paletteView = configurationView.findViewById(R.id.palette) as SpectrumPalette
-    private val emptyView = rootView.findViewById(R.id.empty_view)
+    private val emptyView = rootView.findViewById(R.id.empty_view) as View
 
     init {
         paletteView.setOnColorSelectedListener {
