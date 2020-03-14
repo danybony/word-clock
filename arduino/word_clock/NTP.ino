@@ -1,7 +1,7 @@
 unsigned int localPort = 2390;      // local port to listen for UDP packets
 
 IPAddress timeServerIP; 
-const char* ntpServerName = "time.nist.gov";
+const char* ntpServerName = "ntp1.inrim.it";
 const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
 byte packetBuffer[ NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing packets
 boolean doNTP=false;
