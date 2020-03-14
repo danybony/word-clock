@@ -24,12 +24,19 @@ void setup() {
 void loop() {
   loopLightSensor();
   loopNTP();
-  
-  if (updateDisplay) {
+
+  if (outsideWorkingTime()) {
+    displayOff();
+  } else if (updateDisplay) {
     displayTime(ch, cm, cs);
     updateDisplay = false;
   }
 
   delay(1000);
+}
+
+boolean outsideWorkingTime() {
+  return (ch > 1 && ch < 6)
+      || (ch == 6 && cm < 45);
 }
 

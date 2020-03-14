@@ -11,6 +11,14 @@ void setupLEDs() {
     pixels.begin();
 }
 
+void displayOff() {
+  boolean matrix[LEDS_COUNT];
+  for (int i=0; i<LEDS_COUNT; i++) {
+    matrix[i] = false;
+  }
+  display(matrix);
+}
+
 void displayWiFi() {
   boolean matrix[LEDS_COUNT];
   getWiFiMatrix(matrix);
