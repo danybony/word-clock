@@ -9,26 +9,29 @@ const int LEDS_SIDE = 12;
 int ch,cm,cs,cdy,cmo,cyr,cdw;          // current time & date variables
 int om = -1;
 int nh,nm,ns,ndy,nmo,nyr,ndw;          // NTP-based time & date variables
+int timezoneOffset = 0;
 
 boolean updateDisplay = false;
-float ambientBrightness = 255;
+float ambientBrightness = 0.2;
 
 void setup() {
   Serial.begin(115200);
   
+  setupTimezoneButton();
   setupLEDs();
   setupWiFi();
   setupNTP();
 }
 
 void loop() {
-  loopLightSensor();
+//  loopLightSensor();
+  loopTimezoneButton();
   loopNTP();
 
   if (outsideWorkingTime()) {
     displayOff();
   } else if (updateDisplay) {
-    displayTime(ch, cm, cs);
+    displayTime((ch + timezoneOffset) % 24, cm, cs);
     updateDisplay = false;
   }
 
@@ -39,4 +42,3 @@ boolean outsideWorkingTime() {
   return (ch > 1 && ch < 6)
       || (ch == 6 && cm < 45);
 }
-
