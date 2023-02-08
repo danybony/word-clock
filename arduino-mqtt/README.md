@@ -10,3 +10,24 @@ Such connection is used to connect to a local network MQTT broker connected with
 * WiFiManager: https://github.com/tzapu/WiFiManager
 * Adafruit NeoPixel: https://github.com/adafruit/Adafruit_NeoPixel
 * Arduino Home Assistant: https://github.com/dawidchyrzynski/arduino-home-assistant
+
+
+## Home Assistant configuration
+Add the following automation to HA to publish the time every minute to MQTT:
+
+```
+automation:
+	- id: publish_time_for_clock
+	  alias: Publish time every minute
+	  trigger:
+	    - platform: time_pattern
+	      minutes: "/1"
+	  action:
+	    - service: mqtt.publish
+	      data:
+	        qos: 0
+	        retain: true
+	        topic: kitchen/clock/time
+	        payload_template: "{{ now().hour }}:{{ now().minute }}"
+
+```

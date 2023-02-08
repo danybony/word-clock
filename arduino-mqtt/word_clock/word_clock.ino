@@ -2,7 +2,7 @@
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
 #include <Adafruit_NeoPixel.h>    //https://github.com/adafruit/Adafruit_NeoPixel
 //#include <Ethernet.h>
-#include <ArduinoHA.h>
+#include <ArduinoHA.h>            //https://github.com/dawidchyrzynski/arduino-home-assistant
 
 const int LEDS_COUNT = 144;
 const int LEDS_SIDE = 12;
