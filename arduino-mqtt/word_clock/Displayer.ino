@@ -34,7 +34,7 @@ void displayTime(int h, int m) {
 void display(boolean matrix[]) {
     logMatrix(matrix);
     
-    pixels.setBrightness(ambientBrightness * 255);
+    pixels.setBrightness(lettersBrightness);
     updateLEDs(matrix);
     pixels.show();
 }

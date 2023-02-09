@@ -10,7 +10,8 @@ const int LEDS_SIDE = 12;
 int ch,cm;          // current time variables
 
 boolean updateDisplay = false;
-float ambientBrightness = 0.2;
+boolean turnedOn = true;
+float lettersBrightness = 50; // 0-255
 
 void setup() {
   Serial.begin(115200);
@@ -23,17 +24,10 @@ void setup() {
 void loop() {
   loopMqtt();
 
-  if (outsideWorkingTime()) {
+  if (!turnedOn) {
     displayOff();
   } else if (updateDisplay) {
     displayTime(ch, cm);
     updateDisplay = false;
   }
-
-  delay(1000);
-}
-
-boolean outsideWorkingTime() {
-  return (ch > 1 && ch < 6)
-      || (ch == 6 && cm < 45);
 }
