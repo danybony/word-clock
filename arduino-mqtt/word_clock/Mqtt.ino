@@ -43,13 +43,22 @@ void onMqttMessage(const char* topic, const uint8_t* payload, uint16_t length) {
 //    Serial.println((const char*)payload);
 
     if (strcmp(topic, TIME_TOPIC) == 0) { 
-      Serial.print("Time received: "); Serial.println((const char*)payload);
-      
-      char * hoursChar = strtok ((char*)payload, ":");
-      ch = atoi(hoursChar);
+      char *data = (char*)payload;
+      Serial.print("Time received: "); Serial.println(data);
 
-      char * minChar = strtok (NULL, ":");
-      cm = atoi(minChar);
+      cSFP(sfData, data);
+      sfData.trim();
+      
+      char delimiters[] = ":";
+      sfData += delimiters;
+      cSF(sfToken, 2);
+            
+      sfData.nextToken(sfToken, delimiters);
+      sfToken.toInt(ch);
+      
+      sfData.nextToken(sfToken, delimiters);
+      sfToken.toInt(cm);
+
       updateDisplay = true; 
     }
 }
