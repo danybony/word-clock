@@ -28,6 +28,6 @@ automation:
 	        qos: 0
 	        retain: true
 	        topic: kitchen/clock/time
-	        payload_template: "{{ now().hour }}:{{ now().minute }}"
+	        payload_template: "{{ now().hour }}:{{ now().minute }}:"
 
 ```
